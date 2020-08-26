@@ -1,5 +1,6 @@
 var express = require("express");
 var mongoose = require("mongoose");
+var bodyParser = require('body-parser');
 var app = express();
 
 
@@ -29,6 +30,48 @@ db.on('error', function (err) {
 // OtherSettings
 app.set('view engine', 'ejs');
 app.use(express.static(__dirname + '/public'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
+// DB Schema
+// mongoose.Schema에서 DB에 어떤 형식으로 지정할 지를 지정해주는 구역
+var contactSchema = mongoose.Schema({
+    name: { type: String, required: true, unique: true },
+    email: { tpye: String },
+    phone: { type: String }
+});
+
+// contact라는 데이터 콜렉션을 Contact라는 변수에 연결
+var Contact = mongoose.model('contact', contactSchema);
+
+// "/"에 GET 요청이 올 경우 /contacts로 리다이렉트하는 구문
+app.get('/', (req, res) => {
+    res.redirect('/contacts');
+});
+
+// "/contacts"로 요청이 올 경우
+app.get('/contacts', (res, req) => {
+
+    // find([검색 조건], Callback_함수)
+    // 검색 조건에 {}를 줄 경우 DB에 해당 모델의 모든 Data를 return 한다.
+    Contact.find({}, (err, contacts) => {
+        // 에러가 있다면 에러를 JSON 형식으로 웹페이지에 표시
+        if (err) return res.json(err);
+        res.render('contacts/index', { contacts: contacts });
+    });
+});
+
+// "/contacts/new" GET 요청이 올 경우 View/contactsd/new.ejs를 Reander 한다.
+app.get('/contacts/new', (req, res) => {
+    res.render('contacts/new');
+});
+
+app.post('/contacts', (req, res) => {
+    Contact.create(req.body, (err, Contact) => {
+        if (err) return res.json(err);
+        res.redirect('/contacts');
+    });
+});
 
 // Port Setting
 var port = 3000;
