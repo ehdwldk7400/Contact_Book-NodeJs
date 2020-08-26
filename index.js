@@ -45,16 +45,16 @@ var contactSchema = mongoose.Schema({
 var Contact = mongoose.model('contact', contactSchema);
 
 // "/"에 GET 요청이 올 경우 /contacts로 리다이렉트하는 구문
-app.get('/', (req, res) => {
+app.get('/', function (req, res) {
     res.redirect('/contacts');
 });
 
 // "/contacts"로 요청이 올 경우
-app.get('/contacts', (res, req) => {
+app.get('/contacts', function (req, res) {
 
     // find([검색 조건], Callback_함수)
     // 검색 조건에 {}를 줄 경우 DB에 해당 모델의 모든 Data를 return 한다.
-    Contact.find({}, (err, contacts) => {
+    Contact.find({}, function (err, contacts) {
         // 에러가 있다면 에러를 JSON 형식으로 웹페이지에 표시
         if (err) return res.json(err);
         res.render('contacts/index', { contacts: contacts });
@@ -62,12 +62,12 @@ app.get('/contacts', (res, req) => {
 });
 
 // "/contacts/new" GET 요청이 올 경우 View/contactsd/new.ejs를 Reander 한다.
-app.get('/contacts/new', (req, res) => {
+app.get('/contacts/new', function (req, res) {
     res.render('contacts/new');
 });
 
-app.post('/contacts', (req, res) => {
-    Contact.create(req.body, (err, Contact) => {
+app.post('/contacts', function (req, res) {
+    Contact.create(req.body, function (err, Contact) {
         if (err) return res.json(err);
         res.redirect('/contacts');
     });

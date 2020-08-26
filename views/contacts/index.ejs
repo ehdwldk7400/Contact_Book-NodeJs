@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="kr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <%- include('../partials/head') %>
+</head>
+
+<body>
+    <%- include('../partials/nav') %>
+
+    <div class="contact contact-index">
+        <h2>Index</h2>
+        <ul>
+            <% contacts.forEach(function(contact) { %>
+            <li>
+                <%= contact.name %>
+            </li>
+        </ul>
+        <% }) %>
+    </div>
+</body>
+
+</html>
