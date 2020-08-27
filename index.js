@@ -1,6 +1,7 @@
 var express = require("express");
 var mongoose = require("mongoose");
 var bodyParser = require('body-parser');
+var methodOverride = require('method-override');
 var app = express();
 
 
@@ -32,6 +33,7 @@ app.set('view engine', 'ejs');
 app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(methodOverride('_method'));
 
 // DB Schema
 // mongoose.Schema에서 DB에 어떤 형식으로 지정할 지를 지정해주는 구역
@@ -68,6 +70,38 @@ app.get('/contacts/new', function (req, res) {
 
 app.post('/contacts', function (req, res) {
     Contact.create(req.body, function (err, Contact) {
+        if (err) return res.json(err);
+        res.redirect('/contacts');
+    });
+});
+
+// DB에서 req.params.id의 값을 검색하여 반환하고 없다면 NULL을 전달한다.
+// 에러가 없다면 show.ejs를 Render한다.
+app.get('/contacts/:id', function (req, res) {
+    Contact.findOne({ _id: req.params.id }, function (err, contact) {
+        if (err) return res.json(err);
+        res.render('contacts/show', { contact: contact });
+    });
+});
+
+// 검색 결과를 받아 에러가 없다면 edit.ejs Render를 한다.
+app.get('/contacts/:id/edit', function (req, res) {
+    Contact.findOne({ _id: req.params.id }, function (err, contact) {
+        if (err) return res.json(err);
+        res.render('contacts/edit', { contact: contact });
+    });
+});
+
+// findOneAndUpdate() DB에서 해당 Model의 document를 하나 찾아 그 Data를 수정하는 함수이다.
+app.put('/contacts/:id', function (req, res) {
+    Contact.findOneAndUpdate({ _id: req.params.id }, req.body, function (err, contact) {
+        if (err) return res.json(err);
+        res.redirect('contacts/' + req.params.id);
+    });
+})
+
+app.delete('/contacts/:id', function (req, res) {
+    Contact.deleteOne({ _id: req.params.id }, function (err) {
         if (err) return res.json(err);
         res.redirect('/contacts');
     });

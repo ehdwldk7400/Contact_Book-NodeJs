@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include('../partials/head') %>
+</head>
+
+<body>
+    <%- include('../partials/nav') %>
+    <div class="contacdt contact-edit">
+        <form class="contact-form" action="/contact/<%= contact._id %>?_method=put" method="POST">
+            <div>
+                <label for="name">Name</label>
+                <input type="text" id="name" value="<%= contact.name %>">
+            </div>
+            <div>
+                <label for="email">Email</label>
+                <input type="text" id="email" value="<%= contact.email %>">
+            </div>
+            <div>
+                <label for="phone">Phone</label>
+                <input type="text" id="phone" value="<%= contact.phone %>">
+            </div>
+            <div>
+                <button type="submit">Submit</button>
+            </div>
+        </form>
+    </div>
+</body>
+
+</html>
